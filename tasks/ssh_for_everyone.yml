@@ -1,0 +1,23 @@
+---
+
+#######################
+# Enable for everyone #
+#######################
+
+# dseditgroup -o delete will return 64 if group is not found
+- name: Enable for everyone | Delete group com.apple.access_ssh
+  command: /usr/sbin/dseditgroup -o delete -n /Local/Default -q com.apple.access_ssh
+  register: delete_access
+  changed_when: delete_access.rc == 0
+  failed_when: delete_access.rc != 64 and delete_access.rc != 0
+
+# dseditgroup -o create will return 0 no matter if group is created or exists allready
+- name: Enable for everyone | Check of group exists
+  command: /usr/sbin/dseditgroup -o read -n /Local/Default -q com.apple.access_ssh-disabled
+  register: access_disabled_exists
+  changed_when: False
+  ignore_errors: yes
+
+- name: Enable for everyone | Create group com.apple.access_ssh-disabled
+  command: /usr/sbin/dseditgroup -o create -n /Local/Default -q com.apple.access_ssh-disabled
+  when: access_disabled_exists.stderr == "Group not found."

@@ -1,0 +1,4 @@
+---
+
+macos_ssh__ssh_enabled: True
+macos_ssh__ssh_access_everyone: False

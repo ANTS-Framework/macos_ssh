@@ -1,0 +1,40 @@
+---
+
+#####################
+# Enable for admins #
+#####################
+
+# dseditgroup -o delete will return 64 if group is not found
+- name: Enable for admin only | Delete group com.apple.access_ssh-disabled
+  command: /usr/sbin/dseditgroup -o delete -n /Local/Default -q com.apple.access_ssh-disabled
+  register: delete_disabled
+  changed_when: delete_disabled.rc == 0
+  failed_when: delete_disabled.rc != 64 and delete_disabled.rc != 0
+
+# dseditgroup -o create will return 0 no matter if group is created or exists allready
+- name: Enable for admin only | Check if group exists
+  command: /usr/sbin/dseditgroup -o read -n /Local/Default -q com.apple.access_ssh
+  register: access_exists
+  changed_when: False
+  ignore_errors: yes
+
+- name: Enable for admin only | Create group com.apple.access_ssh
+  command: /usr/sbin/dseditgroup -o create -n /Local/Default -q com.apple.access_ssh
+  when: access_exists.stderr == "Group not found."
+
+# Get GID of Admin Gruop:
+- name: Enable for admin only | Get GeneratedUID for admin group
+  shell: /usr/bin/dscl /Local/Default -read /Groups/admin GeneratedUID | cut -d " " -f 2
+  register: admin_group_uid
+  changed_when: False
+
+# Get nested Groups by GID:
+- name: Enable for admin only | Get groups nested in com.apple.access_ssh
+  command: /usr/bin/dscl /Local/Default -read /Groups/com.apple.access_ssh NestedGroups
+  register: nested_groups
+  changed_when: False
+
+# dseditgroup -o edit will return 0 no matter if group is nested allready or not
+- name: Enable for admin only | Nest admin group in com.apple.access_ssh
+  command: /usr/sbin/dseditgroup -o edit -n /Local/Default -a admin -t group com.apple.access_ssh
+  when: not admin_group_uid.stdout in nested_groups.stdout

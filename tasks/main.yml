@@ -1,0 +1,29 @@
+---
+
+- name: Get remote login status
+  command: /usr/sbin/systemsetup -getremotelogin
+  changed_when: False
+  register: remotelogin_status
+
+- name: Make sure remote login is enabled
+  command: /usr/sbin/systemsetup -setremotelogin on
+  when: 
+    - "{{ macos_ssh__ssh_enabled }}"
+    - "remotelogin_status.stdout == 'Remote Login: Off'"
+
+- name: Make sure remote login is disabled
+  command: /usr/sbin/systemsetup -setremotelogin off
+  when:
+    - "not {{ macos_ssh__ssh_enabled }}"
+    - "remotelogin_status.stdout == 'Remote Login: On'"
+
+- include: ssh_for_admin.yml
+  when:
+    - "{{ macos_ssh__ssh_enabled }}"
+    - "not {{ macos_ssh__ssh_access_everyone }}"
+
+- include: ssh_for_everyone.yml
+  when:
+    - "{{ macos_ssh__ssh_enabled }}"
+    - "{{ macos_ssh__ssh_access_everyone }}"
+

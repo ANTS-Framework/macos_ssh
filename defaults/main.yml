@@ -1,4 +1,6 @@
 ---
 
+# Enable or disable ssh
 macos_ssh__ssh_enabled: True
+# Enable ssh for admin group or for everyone
 macos_ssh__ssh_access_everyone: False

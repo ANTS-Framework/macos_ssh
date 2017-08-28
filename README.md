@@ -1,6 +1,8 @@
 macOS ssh
 =========
 
+[![Build Status](https://travis-ci.org/ANTS-Framework/macos_ssh.svg?branch=master)](https://travis-ci.org/ANTS-Framework/macos_ssh)
+
 This role is used to enable remote login (SSH) for admins or for everyone. 
 
 Role Variables

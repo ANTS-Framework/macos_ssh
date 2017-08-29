@@ -15,5 +15,7 @@ galaxy_info:
         - macsible
         - ssh
         - client
-        - ansible-pull
+        - antsFramework
+        - ansiblePull
+        - unibas
 dependencies: []

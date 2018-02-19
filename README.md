@@ -3,7 +3,7 @@ macOS ssh
 
 [![Build Status](https://travis-ci.org/ANTS-Framework/macos_ssh.svg?branch=master)](https://travis-ci.org/ANTS-Framework/macos_ssh)
 
-This role is used to enable remote login (SSH) for admins or for everyone. 
+This role is used to enable remote login (SSH) for admins or for everyone.
 
 Role Variables
 --------------
@@ -22,21 +22,21 @@ Example Playbook
 # This is the default, so we do not need to change a variable.
 - hosts: ssh_admin
   roles:
-  - role: its-ccm-macos-ssh
+  - role: macos_ssh
 
 # Clients with ssh disabled
 - hosts: ssh_admin
   vars:
     - macos_ssh__ssh_enabled: False
   roles:
-  - role: its-ccm-macos-ssh
+  - role: macos_ssh
 
 # Clients with ssh enabled for everyone
 - hosts: ssh_admin
   vars:
     - macos_ssh__ssh_access_everyone: True
   roles:
-  - role: its-ccm-macos-ssh
+  - role: macos_ssh
 ```
 
 License
